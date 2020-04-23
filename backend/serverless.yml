@@ -1,0 +1,48 @@
+service:
+  name: udacity-capstone-backend
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  serverless-offline:
+    httpPort: 8080
+    useChildProcesses: true
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+    stages:
+      - local
+
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
+  - serverless-dynamodb-local
+  - serverless-offline
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  apiGateway:
+    minimumCompressionSize: 1024
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+functions:
+
+  auth:
+    handler: auth/authorizer.handler
+
+  getFeeds:
+    handler: api/feed.handler
+    events:
+      - http:
+          method: get
+          path: feed
+
