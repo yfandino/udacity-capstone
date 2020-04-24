@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import { CreateFeedItemRequest } from '../models/requests/CreateFeedItemRequest';
-import { create } from '../dataLayer/feed'
+import { create, getAll } from '../dataLayer/feed'
 import { FeedItem } from '../models/feed/FeedItem';
 
 export async function createFeedItem(request: CreateFeedItemRequest, userId: string): Promise<FeedItem> {
@@ -11,4 +11,8 @@ export async function createFeedItem(request: CreateFeedItemRequest, userId: str
     name: request.name,
     caption: request.caption
   });
+}
+
+export async function getFeed(owner: string): Promise<FeedItem[]> {
+  return getAll(owner);
 }

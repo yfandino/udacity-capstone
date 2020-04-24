@@ -31,3 +31,18 @@ export async function create(feedItem: FeedItem): Promise<FeedItem> {
 
   return feedItem;
 }
+
+export async function getAll(owner: string): Promise<FeedItem[]> {
+  logger.info(`Getting feed for user: ${owner}`);
+
+  const DocumentClient = createDynamoDBClient()
+
+  const result = await DocumentClient.query({
+    TableName: FEEDS_TABLE,
+    IndexName: FEEDS_ID_INDEX,
+    KeyConditionExpression: 'owner = :owner',
+    ScanIndexForward: false
+  }).promise();
+  
+  return result.Items as FeedItem[];
+}
