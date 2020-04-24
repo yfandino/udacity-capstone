@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { getFeed } from '../../businessModel/feed';
+import { getFeed } from '../../businessLogic/feed';
 import { parseUserId } from '../../utils/auth';
 import { createLogger } from '../../utils/logger';
 

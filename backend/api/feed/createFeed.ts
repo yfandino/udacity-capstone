@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { CreateFeedItemRequest } from '../../models/requests/CreateFeedItemRequest';
-import { createFeedItem } from '../../businessModel/feed';
+import { createFeedItem } from '../../businessLogic/feed';
 import { parseUserId } from '../../utils/auth';
 import { createLogger } from '../../utils/logger';
 

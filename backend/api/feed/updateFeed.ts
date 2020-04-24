@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { UpdateFeedItemRequest } from '../../models/requests/UpdateFeedItemRequest';
-import { updateFeedItem } from '../../businessModel/feed';
+import { updateFeedItem } from '../../businessLogic/feed';
 import { createLogger } from '../../utils/logger';
 
 const logger = createLogger('createFedd');
