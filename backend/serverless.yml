@@ -28,21 +28,98 @@ package:
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+
+  # tracing:
+  #   lambda: true
+  #   apiGateway: true
 
   apiGateway:
     minimumCompressionSize: 1024
+    
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    FEEDS_TABLE: FEEDS_TABLE-${self:provider.stage}
+    FEEDS_ID_INDEX: FeedsIndexId
+    ATTACHMENTS_BUCKET: udacity-capstone-images-bucket-as5d-${self:provider.stage}
 
 functions:
 
-  auth:
-    handler: auth/authorizer.handler
+  Auth:
+    handler: api/auth/authorizer.handler
+    environment:
+      AUTH0_JWTK_URL: https://dev-02l06eew.auth0.com/.well-known/jwks.json
 
-  getFeeds:
-    handler: api/feed.handler
+  CreateFeeds:
+    handler: api/feed/createFeeds.handler
+    events:
+      - http:
+          method: post
+          path: feed
+          cors: true
+          authorizer: Auth
+          request:
+            schema:
+              application/json: ${file(models/requests/create-feed-request.json)}
+    iamRoleStatementsName: api-lambda-CreateFeeds-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+      Resource: 
+          - !GetAtt FeedsDynamoDBTable.Arn
+
+  GetFeeds:
+    handler: api/feed/getFeeds.handler
     events:
       - http:
           method: get
           path: feed
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsName: api-lambda-GetFeeds-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+      Resource: 
+          - !GetAtt FeedsDynamoDBTable.Arn
+          - !Join [ /, [ !GetAtt FeedsDynamoDBTable.Arn, "index/${self:provider.environment.TODOS_ID_INDEX}" ] ]
+  
+  GetFeedById:
+    handler: api/feed/getFeedById.handler
+    events:
+      - http:
+          method: get
+          path: feed/{feedId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsName: api-lambda-GetFeeds-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+      Resource: 
+          - !GetAtt FeedsDynamoDBTable.Arn
+
+  UpdateFeed:
+    handler: api/feed/updateFeed.handler
+    events:
+      - http:
+          method: patch
+          path: feed/{feedId}
+          cors: true
+          authorizer: Auth
+          request:
+            schema:
+              application/json: ${file(models/requests/update-feed-request.json)}
+    iamRoleStatementsName: api-lambda-UpdateFeed-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+      Resource: 
+          - !GetAtt FeedsDynamoDBTable.Arn
+  
 
