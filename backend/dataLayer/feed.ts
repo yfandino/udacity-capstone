@@ -9,7 +9,7 @@ const FEEDS_ID_INDEX = process.env.TODOS_ID_INDEX;
 
 function createDynamoDBClient() {
   if (process.env.IS_OFFLINE) {
-    console.log('Creating a local DynamoDB instance')
+    logger.info('Creating a local DynamoDB instance');
     return new AWS.DynamoDB.DocumentClient({
       region: 'localhost',
       endpoint: 'http://localhost:8000'
@@ -19,8 +19,12 @@ function createDynamoDBClient() {
   return new AWS.DynamoDB.DocumentClient()
 }
 
-export async function create(feedItem: FeedItem): Promise<FeedItem> {
-  logger.info(`Creating feedItem : ${feedItem}`);
+export async function createOrUpdate(feedItem: FeedItem, action: string): Promise<FeedItem> {
+  logger.info(`${action} feedItem : ${feedItem}`);
+
+  if (action === "Update") {
+    feedItem.updatedAt = new Date().toISOString();
+  }
 
   const DocumentClient = createDynamoDBClient();
 
@@ -35,7 +39,7 @@ export async function create(feedItem: FeedItem): Promise<FeedItem> {
 export async function getAll(owner: string): Promise<FeedItem[]> {
   logger.info(`Getting feed for user: ${owner}`);
 
-  const DocumentClient = createDynamoDBClient()
+  const DocumentClient = createDynamoDBClient();
 
   const result = await DocumentClient.query({
     TableName: FEEDS_TABLE,
@@ -45,4 +49,17 @@ export async function getAll(owner: string): Promise<FeedItem[]> {
   }).promise();
   
   return result.Items as FeedItem[];
+}
+
+export async function deleteItem(id: string, owner: string): Promise<void> {
+  logger.info(`Delete feedItem : ${id}`);
+  const DocumentClient = createDynamoDBClient();
+  
+  await DocumentClient.delete({
+    TableName: FEEDS_TABLE,
+    Key: {
+      owner,
+      id
+    }
+  }).promise();
 }

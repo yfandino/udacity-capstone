@@ -107,8 +107,8 @@ functions:
     handler: api/feed/updateFeed.handler
     events:
       - http:
-          method: patch
-          path: feed/{feedId}
+          method: put
+          path: feed
           cors: true
           authorizer: Auth
           request:
@@ -119,6 +119,22 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
+        Resource: 
+            - !GetAtt FeedsDynamoDBTable.Arn
+
+  DeleteFeed:
+    handler: api/feed/deleteFeed.handler
+    events:
+      - http:
+          method: delete
+          path: feed/{feedId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsName: api-lambda-DeleteFeed-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
         Resource: 
             - !GetAtt FeedsDynamoDBTable.Arn
   

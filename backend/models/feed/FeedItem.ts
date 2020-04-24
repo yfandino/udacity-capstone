@@ -3,5 +3,6 @@ export interface FeedItem {
   name: string,
   caption: string,
   createdAt: string,
+  updatedAt?: string,
   owner: string
 }
