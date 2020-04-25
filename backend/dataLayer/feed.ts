@@ -2,6 +2,9 @@ import * as AWS from 'aws-sdk';
 import { FeedItem } from '../models/feed/FeedItem';
 import { makeLogger } from '../utils/logger';
 
+const AWSXRay =require('aws-xray-sdk');
+const XAWS = AWSXRay.captureAWS(AWS);
+
 const logger = makeLogger('feedDataLayer');
 
 const FEEDS_TABLE = process.env.FEEDS_TABLE;
@@ -16,7 +19,7 @@ function createDynamoDBClient() {
     })
   }
 
-  return new AWS.DynamoDB.DocumentClient()
+  return new XAWS.DynamoDB.DocumentClient()
 }
 
 export async function createOrUpdate(feedItem: FeedItem, action: string): Promise<FeedItem> {
