@@ -3,14 +3,19 @@
   "title": "createFeedItem",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "string"
+    },
     "name": {
       "type": "string"
     },
     "caption": {
       "type": "string"
     },
-    "url"
+    "url": {
+      "type": "string"
+    }
   },
-  "required": ["name", "caption", "url"],
+  "required": ["id", "name", "url"],
   "additionalProperties": false
 }

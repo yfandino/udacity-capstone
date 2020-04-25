@@ -1,4 +1,3 @@
-import * as uuid from 'uuid';
 import { CreateFeedItemRequest } from '../models/requests/CreateFeedItemRequest';
 import { UpdateFeedItemRequest } from '../models/requests/UpdateFeedItemRequest';
 import { createOrUpdate, getAll, deleteItem, addFeedItemURL } from '../dataLayer/feed';
@@ -7,7 +6,7 @@ import { FeedItem } from '../models/feed/FeedItem';
 
 export async function createFeedItem(request: CreateFeedItemRequest, userId: string): Promise<FeedItem> {
   return await createOrUpdate({
-    id: uuid.v4(),
+    id: request.id,
     owner: userId,
     createdAt: new Date().toISOString(),
     name: request.name,

@@ -8,6 +8,8 @@ const logger = makeLogger('getFeed');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
+  logger.info(event);
+
   const jwt = event.headers.Authorization.split(' ').pop();
   const userId = parseUserId(jwt);
 
@@ -15,7 +17,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   try {
 
-    const feed = await getFeed(userId);
+    const items = await getFeed(userId);
 
     return {
       statusCode: 200,
@@ -24,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         "Access-Control-Request-Method": "GET",
         'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ feed })
+      body: JSON.stringify({ items })
     }
 
   } catch (err) {

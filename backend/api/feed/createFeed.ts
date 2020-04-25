@@ -11,14 +11,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   logger.info(`Creating new FeedItem`);
 
-  const item: CreateFeedItemRequest = JSON.parse(event.body);
+  const newFeedItem: CreateFeedItemRequest = JSON.parse(event.body);
 
   const jwt = event.headers.Authorization.split(' ').pop();
   const userId = parseUserId(jwt);
 
   try {
 
-    const feedItem = await createFeedItem(item, userId);
+    const item = await createFeedItem(newFeedItem, userId);
 
     return {
       statusCode: 201,
@@ -26,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ feedItem })
+      body: JSON.stringify({ item })
     }
 
   } catch (err) {

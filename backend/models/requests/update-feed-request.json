@@ -17,8 +17,14 @@
     },
     "caption": {
       "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
     }
   },
-  "required": ["id", "owner", "createdAt", "name", "caption"],
+  "required": ["id", "owner", "createdAt", "name", "caption", "url"],
   "additionalProperties": false
 }

@@ -20,7 +20,7 @@ function createDynamoDBClient() {
 }
 
 export async function createOrUpdate(feedItem: FeedItem, action: string): Promise<FeedItem> {
-  logger.info(`${action} feedItem : ${feedItem}`);
+  logger.info(`${action} feedItem : ${JSON.stringify(feedItem, null, 2)}`);
 
   if (action === "Update") {
     feedItem.updatedAt = new Date().toISOString();

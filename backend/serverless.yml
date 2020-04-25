@@ -18,6 +18,7 @@ custom:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-deployment-bucket
   - serverless-plugin-tracing
   - serverless-dynamodb-local
   - serverless-offline
@@ -31,9 +32,12 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
-  # tracing:
-  #   lambda: true
-  #   apiGateway: true
+  deploymentBucket:
+    name: serverless-deployment-bucket-as5d-${self:provider.stage}
+
+  tracing:
+    lambda: true
+    apiGateway: true
 
   apiGateway:
     minimumCompressionSize: 1024
@@ -95,7 +99,7 @@ functions:
           path: feed/{feedId}
           cors: true
           authorizer: Auth
-    iamRoleStatementsName: api-lambda-GetFeeds-${self:provider.stage}-Roles
+    iamRoleStatementsName: api-lambda-GetFeedById-${self:provider.stage}-Roles
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -118,7 +122,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItem
+          - dynamodb:PutItem
         Resource: 
           - !GetAtt FeedsDynamoDBTable.Arn
 
@@ -157,7 +161,7 @@ functions:
         Action:
           - s3:PutObject
         Resource: 
-          - !GetAtt !Join [ '/', [ !GetAtt ImagesS3Bucket.Arn, '*' ] ]
+          - !Join [ '/', [ !GetAtt ImagesS3Bucket.Arn, '*' ] ]
   
 resources:
   - ${file(./resources/feedsTable.yml)}
