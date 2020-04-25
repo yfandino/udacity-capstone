@@ -69,3 +69,29 @@ export async function deleteItem(id: string, owner: string): Promise<void> {
     }
   }).promise();
 }
+
+export async function addFeedItemURL(bucket: string, key: string): Promise<void> {
+  logger.info(`Adding URL to feedItem`);
+
+  const DocumentClient = createDynamoDBClient();
+
+  const split = key.split("/");
+  const owner = split[0];
+  const id = split[1];
+
+  await DocumentClient.update({
+    TableName: FEEDS_TABLE,
+    Key: {
+      "owner": owner,
+      "id": id
+    },
+    UpdateExpression: "set #url = :url",
+    ExpressionAttributeNames: {
+      "#name": "name"
+    },
+    ExpressionAttributeValues: {
+      ":name" : `https://${bucket}.s3.amazonaws.com/${key}`
+    },
+    ReturnValues: "ALL_NEW"
+  }).promise();
+}

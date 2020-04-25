@@ -137,6 +137,34 @@ functions:
           - dynamodb:DeleteItem
         Resource: 
             - !GetAtt FeedsDynamoDBTable.Arn
+
+  GenerateUploadUrl:
+    handler: api/feed/getSignedUrl.handler
+    events:
+      - http:
+          method: post
+          path: feed/{feedId}/upload
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsName: api-lambda-GenerateUploadUrl-${self:provider.stage}-Roles
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: 
+            - !GetAtt FeedsDynamoDBTable.Arn
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: 
+            - !GetAtt !Join [ '/', [ !GetAtt ImagesS3Bucket.Arn, '*' ] ]
+  
+  s3ToDynamoDb:
+    handler: lambda/s3Trigger.handler
+    events:
+      - s3: 
+          bucket: ImagesS3Bucket
+          event: s3:ObjectCreated:Put
   
 resources:
   - ${file(./resources/feedsTable.yml)}

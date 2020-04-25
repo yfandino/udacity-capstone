@@ -1,7 +1,8 @@
 import * as uuid from 'uuid';
 import { CreateFeedItemRequest } from '../models/requests/CreateFeedItemRequest';
 import { UpdateFeedItemRequest } from '../models/requests/UpdateFeedItemRequest';
-import { createOrUpdate, getAll, deleteItem } from '../dataLayer/feed'
+import { createOrUpdate, getAll, deleteItem, addFeedItemURL } from '../dataLayer/feed';
+import { getUploadSignedURL } from '../dataLayer/s3Feed'
 import { FeedItem } from '../models/feed/FeedItem';
 
 export async function createFeedItem(request: CreateFeedItemRequest, userId: string): Promise<FeedItem> {
@@ -24,4 +25,12 @@ export async function updateFeedItem(request: UpdateFeedItemRequest): Promise<Fe
 
 export async function deleteFeedItem(id: string, owner: string): Promise<void> {
   return await deleteItem(id, owner);
+}
+
+export async function getSignedURL(id: string, owner: string): Promise<string> {
+  return await getUploadSignedURL(id, owner);
+}
+
+export async function addImageURL(bucket: string, key: string): Promise<void> {
+  return await addFeedItemURL(bucket, key)
 }
