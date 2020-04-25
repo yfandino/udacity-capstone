@@ -1,12 +1,26 @@
-import * as winston from 'winston';
+import { createLogger, format, transports } from 'winston';
 
-export function createLogger(name: string) {
-  return winston.createLogger({
+const customFormat = format( data => {
+  if (data instanceof Error) {
+    return Object.assign({
+      message: data.message,
+      error: data.stack
+    }, data);
+  }
+
+  return data;
+});
+
+export function makeLogger(name: string) {
+  return createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: format.combine(
+      customFormat(),
+      format.json()
+    ),
     defaultMeta: { name },
     transports: [
-      new winston.transports.Console()
+      new transports.Console()
     ]
   })
 }

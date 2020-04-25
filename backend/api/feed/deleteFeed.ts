@@ -1,19 +1,23 @@
-import 'source-map-support/register'
-import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import { UpdateFeedItemRequest } from '../../models/requests/UpdateFeedItemRequest';
-import { updateFeedItem } from '../../businessLogic/feed';
+import 'source-map-support/register';
+import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import { deleteFeedItem } from '../../businessLogic/feed';
+import { parseUserId } from '../../utils/auth';
 import { makeLogger } from '../../utils/logger';
 
-const logger = makeLogger('updateFeed');
+const logger = makeLogger('deleteFeed');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  logger.info(`Updating feedItem ${event.body}`);
 
-  const feedItem: UpdateFeedItemRequest = JSON.parse(event.body)
+  logger.info(`Delete feedItem ${event.pathParameters.feedId}`);
+
+  const id = event.pathParameters.feedId
+
+  const jwt = event.headers.Authorization.split(' ').pop();
+  const owner = parseUserId(jwt);
 
   try {
 
-    await updateFeedItem(feedItem);
+    await deleteFeedItem(id, owner);
 
     return {
       statusCode: 204,

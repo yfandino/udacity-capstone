@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { FeedItem } from '../models/feed/FeedItem';
-import { createLogger } from '../utils/logger';
+import { makeLogger } from '../utils/logger';
 
-const logger = createLogger('feedDataLayer');
+const logger = makeLogger('feedDataLayer');
 
 const FEEDS_TABLE = process.env.FEEDS_TABLE;
 const FEEDS_ID_INDEX = process.env.TODOS_ID_INDEX;
@@ -40,11 +40,17 @@ export async function getAll(owner: string): Promise<FeedItem[]> {
   logger.info(`Getting feed for user: ${owner}`);
 
   const DocumentClient = createDynamoDBClient();
-
+console.log(FEEDS_TABLE)
   const result = await DocumentClient.query({
     TableName: FEEDS_TABLE,
     IndexName: FEEDS_ID_INDEX,
-    KeyConditionExpression: 'owner = :owner',
+    KeyConditionExpression: '#owner = :owner',
+    ExpressionAttributeNames: {
+      "#owner": "owner"
+    },
+    ExpressionAttributeValues: {
+      ':owner': owner
+    },
     ScanIndexForward: false
   }).promise();
   

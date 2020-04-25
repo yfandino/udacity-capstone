@@ -3,9 +3,9 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { CreateFeedItemRequest } from '../../models/requests/CreateFeedItemRequest';
 import { createFeedItem } from '../../businessLogic/feed';
 import { parseUserId } from '../../utils/auth';
-import { createLogger } from '../../utils/logger';
+import { makeLogger } from '../../utils/logger';
 
-const logger = createLogger('createFedd');
+const logger = makeLogger('createFeed');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 

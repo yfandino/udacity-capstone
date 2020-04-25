@@ -52,7 +52,7 @@ functions:
       AUTH0_JWTK_URL: https://dev-02l06eew.auth0.com/.well-known/jwks.json
 
   CreateFeeds:
-    handler: api/feed/createFeeds.handler
+    handler: api/feed/createFeed.handler
     events:
       - http:
           method: post

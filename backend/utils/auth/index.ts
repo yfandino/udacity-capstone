@@ -1,6 +1,6 @@
 import { decode, verify } from 'jsonwebtoken';
 import fetch from 'node-fetch';
-import { Jwt, JwtPayload } from '../../models/auth';
+import { Jwt, JwtPayload, Jwks } from '../../models/auth';
 
 /**
  * Parse a JWT token and return a user id
@@ -15,7 +15,7 @@ export function parseUserId(jwtToken: string): string {
 export async function verifyToken(authToken: string, jwksUrl: string): Promise<JwtPayload> {
   const token = getToken(authToken);
   const jwt: Jwt = decode(token, { complete: true }) as Jwt;
-  const jwks = await fetch.get(jwksUrl).then( res => res.json).then( data => data );
+  const jwks = await fetch(jwksUrl).then( (res):Object => res.json()) as Jwks;
   const key = jwks.keys.find( key => key.kid === jwt.header.kid);
   
   if (!key) throw new Error('Unauthorized');

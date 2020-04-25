@@ -2,9 +2,9 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { getFeed } from '../../businessLogic/feed';
 import { parseUserId } from '../../utils/auth';
-import { createLogger } from '../../utils/logger';
+import { makeLogger } from '../../utils/logger';
 
-const logger = createLogger('createFedd');
+const logger = makeLogger('getFeed');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
