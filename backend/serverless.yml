@@ -68,7 +68,7 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: 
-            - !GetAtt FeedsDynamoDBTable.Arn
+          - !GetAtt FeedsDynamoDBTable.Arn
 
   GetFeeds:
     handler: api/feed/getFeeds.handler
@@ -84,8 +84,8 @@ functions:
         Action:
           - dynamodb:Query
         Resource: 
-            - !GetAtt FeedsDynamoDBTable.Arn
-            - !Join [ /, [ !GetAtt FeedsDynamoDBTable.Arn, "index/${self:provider.environment.FEEDS_ID_INDEX}" ] ]
+          - !GetAtt FeedsDynamoDBTable.Arn
+          - !Join [ /, [ !GetAtt FeedsDynamoDBTable.Arn, "index/${self:provider.environment.FEEDS_ID_INDEX}" ] ]
   
   GetFeedById:
     handler: api/feed/getFeedById.handler
@@ -101,7 +101,7 @@ functions:
         Action:
           - dynamodb:GetItem
         Resource: 
-            - !GetAtt FeedsDynamoDBTable.Arn
+          - !GetAtt FeedsDynamoDBTable.Arn
 
   UpdateFeed:
     handler: api/feed/updateFeed.handler
@@ -120,7 +120,7 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: 
-            - !GetAtt FeedsDynamoDBTable.Arn
+          - !GetAtt FeedsDynamoDBTable.Arn
 
   DeleteFeed:
     handler: api/feed/deleteFeed.handler
@@ -136,7 +136,7 @@ functions:
         Action:
           - dynamodb:DeleteItem
         Resource: 
-            - !GetAtt FeedsDynamoDBTable.Arn
+          - !GetAtt FeedsDynamoDBTable.Arn
 
   GenerateUploadUrl:
     handler: api/feed/getSignedUrl.handler
@@ -157,14 +157,7 @@ functions:
         Action:
           - s3:PutObject
         Resource: 
-            - !GetAtt !Join [ '/', [ !GetAtt ImagesS3Bucket.Arn, '*' ] ]
-  
-  s3ToDynamoDb:
-    handler: lambda/s3Trigger.handler
-    events:
-      - s3: 
-          bucket: ImagesS3Bucket
-          event: s3:ObjectCreated:Put
+          - !GetAtt !Join [ '/', [ !GetAtt ImagesS3Bucket.Arn, '*' ] ]
   
 resources:
   - ${file(./resources/feedsTable.yml)}

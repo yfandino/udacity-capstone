@@ -11,7 +11,8 @@ export async function createFeedItem(request: CreateFeedItemRequest, userId: str
     owner: userId,
     createdAt: new Date().toISOString(),
     name: request.name,
-    caption: request.caption
+    caption: request.caption,
+    url: request.url
   }, "Create");
 }
 

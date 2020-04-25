@@ -8,8 +8,9 @@
     },
     "caption": {
       "type": "string"
-    }
+    },
+    "url"
   },
-  "required": ["name", "caption"],
+  "required": ["name", "caption", "url"],
   "additionalProperties": false
 }

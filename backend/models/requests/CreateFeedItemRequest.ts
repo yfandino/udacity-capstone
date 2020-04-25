@@ -1,4 +1,5 @@
 export interface CreateFeedItemRequest {
   name: string,
-  caption: string
+  caption?: string,
+  url: string
 }
